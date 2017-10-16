@@ -111,7 +111,9 @@ Now that the data is in the right format, let's learn how to explore it. We can 
 ```
   vector = np.array([5, 10, 15, 20])
   print(vector[0])
+
 ```
+
 The above code would print the first element of vector, or 5.
 
 Indexing matrices is similar to indexing lists of lists. Here's a refresher on indexing lists of lists:
@@ -121,16 +123,25 @@ list_of_lists = [
         [5, 10, 15], 
         [20, 25, 30]
        ]
+
 ```
+
 The first item in list_of_lists is [5, 10, 15]. If we wanted to access the element 15, we could do this:
+
 ```
+
 first_item = list_of_lists[0]
 first_item[2]
 We could also condense the notation like this:
+
 ```
+
  list_of_lists[0][2]
+
 ```
+
 We can index matrices in a similar way, but we place both indices inside square brackets. The first index specifies which row the data comes from, and the second index specifies which column the data comes from:
+
 ```
  matrix = np.array([
                         [5, 10, 15], 
@@ -140,13 +151,16 @@ We can index matrices in a similar way, but we place both indices inside square 
 30
 
 ```
+
 In the above code, we pass two indices into the square brackets when we index matrix.
 
 We can use value slices to select subsets of arrays just like we can with lists:
+
 ```
   vector = np.array([5, 10, 15, 20])
   vector[0:3]
   array([ 5, 10, 15])
+
 ```
 
 Like lists, vector slicing is from the first index up to but not including the second index. Matrix slicing is a bit more complex, and has four forms:
@@ -157,6 +171,7 @@ Like lists, vector slicing is from the first index up to but not including the s
 * When we want to slice both dimensions.
 
 We'll dive into the first form in this screen. When we want to select one whole dimension, and an element from the other, we can do this:
+
 ```
  matrix = np.array([
                     [5, 10, 15], 
@@ -165,10 +180,13 @@ We'll dive into the first form in this screen. When we want to select one whole 
                  ])
 matrix[:,1]
 array([10, 25, 40])
+
 ```
+
 This will select all of the rows, but only the column with index 1. The colon by itself : specifies that the entirety of a single dimension should be selected. Think of the colon as selecting from the first element in a dimension up to and including the last element.
 
 When we want to select one whole dimension, and a slice of the other, we need to use special notation:
+
 ```
  matrix = np.array([
                     [5, 10, 15], 
@@ -195,6 +213,7 @@ We can also select a single value along an entire dimension. The code belows sel
 matrix[1:3,1]
 array([25, 40])
 ```
+
 We can also slice along both dimensions simultaneously. The following code selects rows with index 1 and 2, and columns with index 0 and 1:
 
 ```
@@ -207,13 +226,16 @@ matrix[1:3,0:2]
 array([[20, 25],
        [35, 40]])
 ```
+
 One of the most powerful aspects of the NumPy module is the ability to make comparisons across an entire array. These comparisons result in Boolean values.
 
 Here's an example of how we can do this with a vector:
+
 ```
 vector = numpy.array([5, 10, 15, 20])
 vector == 10
 ```
+
 If you'll recall from an earlier mission, the double equals sign (==) compares two values. When used with NumPy, it will compare the second value to each element in the vector. If the value are equal, the Python interpreter returns True; otherwise, it returns False. It stores the Boolean results in a new vector.
 
 For example, the code above will generate the vector `[False, True, False, False]`, since only the second element in vector equals `10`.
@@ -227,26 +249,34 @@ matrix = numpy.array([
                     [35, 40, 45]
                  ])
 matrix == 25
+
 ```
+
 The final statement will compare 25 to every element in matrix. The result will be a matrix where elements are True or False:
 
 ```
+
 [
     [False, False, False], 
     [False, True,  False],
     [False, False, False]
 ]
+
 ```
 
 We mentioned that comparisons are very powerful, but it may not have been obvious why on the last screen. Comparisons give us the power to select elements in arrays using Boolean vectors. This allows us to conditionally select certain elements in vectors, or certain rows in matrices.
 
 Here's an example of how we would do this with a vector:
+
 ```
+
 vector = numpy.array([5, 10, 15, 20])
 equal_to_ten = (vector == 10)
 
 print(vector[equal_to_ten])
+
 ```
+
 The code above:
 
 Creates vector.
@@ -257,6 +287,7 @@ Uses equal_to_ten to only select elements in vector where equal_to_ten is True. 
 We can use the same principle to select rows in matrices:
 
 ```
+
 matrix = numpy.array([
                 [5, 10, 15], 
                 [20, 25, 30],
@@ -264,7 +295,9 @@ matrix = numpy.array([
              ])
     second_column_25 = (matrix[:,1] == 25)
     print(matrix[second_column_25, :])
+
 ```
+
 The code above:
 
 * Creates matrix.
@@ -272,8 +305,11 @@ The code above:
 We end up with this matrix:
 
 ```
+
 [
     [20, 25, 30]
 ]
+
 ```
+
 We selected a single row from matrix, which was returned in a new matrix.
