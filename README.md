@@ -313,3 +313,252 @@ We end up with this matrix:
 ```
 
 We selected a single row from matrix, which was returned in a new matrix.
+
+#### Comparison
+On the last screen, we made comparisons based on a single condition. We can also perform comparisons with multiple conditions by specifying each one separately, then joining them with an ampersand (&). When constructing a comparison with multiple conditions, it's critical to put each one in parentheses.
+
+Here's an example of how we would do this with a vector:
+```
+vector = numpy.array([5, 10, 15, 20])
+equal_to_ten_and_five = (vector == 10) & (vector == 5)
+
+```
+
+In the above statement, we have two conditions, `(vector == 10)` and `(vector == 5)`. We use the ampersand `(&)` to indicate that both conditions must be `True` for the final result to be `True`. The statement returns `[False, False, False, False]`, because none of the elements can be `10` and `5` at the same time. Here's a diagram of the comparison logic:
+We can also use the pipe symbol `(|)` to specify that either one condition or the other should be `True`:
+
+```
+vector = numpy.array([5, 10, 15, 20])
+equal_to_ten_or_five = (vector == 10) | (vector == 5)
+```
+The code above will result in `[True, True, False, False]`.
+We can also use comparisons to replace values in an array, based on certain conditions. Here's an example of how we would do this for a vector:
+```vector = numpy.array([5, 10, 15, 20])
+   equal_to_ten_or_five = (vector == 10) | (vector == 5)
+   vector[equal_to_ten_or_five] = 50
+   print(vector)
+```
+This code will complete the following steps:
+
+* Create an array vector.
+* Compare vector to `10` and `5`, and generate a vector that's True where vector is equal to either value.
+* Select only the elements in vector where equal_to_ten_or_five is True.
+* Replace the selected values with the value 50.
+The result will be `[50, 50, 15, 20]`.
+
+We can perform the same replacement on a matrix. To do this, we'll need to use indexing to select a column or row first:
+
+```
+matrix = numpy.array([
+            [5, 10, 15], 
+            [20, 25, 30],
+            [35, 40, 45]
+         ])
+    second_column_25 = matrix[:,1] == 25
+    matrix[second_column_25, 1] = 10
+```
+The code above will result in:
+```
+[
+    [5, 10, 15], 
+    [20, 10, 30],
+    [35, 40, 45]
+]
+```
+We'll soon be working with the Display Value column, which shows how much alcohol the average citizen of a country drinks. However, because world_alcohol currently has a unicode datatype, all of the values in the column are strings. To add these values together or perform any other mathematical operations on them, we'll have to convert the data in the column to floats.
+
+Before we can do this, we need to address the empty string values ('') that appear where there was no original data for the given country and year. If we try to convert the data in the column to floats without removing these values first, we'll get a ValueError. Thankfully, we can remove these items using the replacement technique we learned on the last screen.
+
+We can convert the data type of an array with the astype() method. Here's an example of how this works:
+```vector = numpy.array(["1", "2", "3"])
+   vector = vector.astype(float)
+```
+The code above will convert all of the values in vector to floats: [1.0, 2.0, 3.0].
+
+We'll do something similar with the fifth column of world_alcohol, which contains information on how much alcohol the average citizen of a country drank in a given year. To determine which country drinks the most, we'll have to convert the values in this column to float values. That's because we can't add or perform calculations on these values while they're strings.
+
+Now that alcohol_consumption consists of numeric values, we can perform computations on it. NumPy has a few built-in methods that operate on arrays. You can view all of them [in the documentation] (https://docs.scipy.org/doc/numpy-1.10.1/index.html). For now, here are a few important ones:
+
+* sum() -- Computes the sum of all the elements in a vector, or the sum along a dimension in a matrix
+* mean() -- Computes the average of all the elements in a vector, or the average along a dimension in a matrix
+* max() -- Identifies the maximum value among all the elements in a vector, or the maximum along a dimension in a matrix
+Here's an example of how we'd use one of these methods on a vector:
+```
+vector = numpy.array([5, 10, 15, 20])
+vector.sum()
+```
+This would add together all of the elements in vector, and result in 50.
+With a matrix, we have to specify an additional keyword argument, axis. The axis dictates which dimension we perform the operation on. 1 means that we want to perform the operation on each row, and 0 means on each column. The example below performs an operation across each row:
+```
+matrix = numpy.array([
+                [5, 10, 15], 
+                [20, 25, 30],
+                [35, 40, 45]
+             ])
+    matrix.sum(axis=1)
+```
+
+Each country is associated with several rows for different types of beverages:
+```[['1986', 'Americas', 'Canada', 'Other', ''],
+   ['1986', 'Americas', 'Canada', 'Spirits', '3.11'],
+   ['1986', 'Americas', 'Canada', 'Beer', '4.87'],
+   ['1986', 'Americas', 'Canada', 'Wine', '1.33']]
+```
+To find the total amount the average person in Canada drank in 1986, for example, we'd have to add up all 4 of the rows shown above, then repeat this process for each country.
+
+Now that we know how to calculate the average consumption of all types of alcohol for a single country and year, we can scale up the process and make the same calculation for all countries in a given year. Here's a rough process:
+
+* Create an empty dictionary called totals.
+* Select only the rows in world_alcohol that match a given year. Assign the result to year.
+* Loop through a list of countries. For each country:
+* Select only the rows from year that match the given country.
+* Assign the result to country_consumption.
+* Extract the fifth column from country_consumption.
+* Replace any empty string values in the column with the string 0.
+* Convert the column to the float data type.
+* Find the sum of the column.
+* Add the sum to the totals dictionary, with the country name as the key.
+* After the code executes, you'll have a dictionary containing all of the country names as keys, with the associated alcohol consumption totals as the values.
+
+Now that we've computed total alcohol consumption for each country in 1989, we can loop through the totals dictionary to find the country with the highest value.
+
+The process we've outlined below will help you find the key with the highest value in a dictionary:
+
+* Create a variable called highest_value that will keep track of the highest value. Set its value to 0.
+* Create a variable called highest_key that will keep track of the key associated with the highest value. Set its value to None.
+* Loop through each key in the dictionary.
+- If the value associated with the key is greater than highest_value, assign the value to highest_value, and assign the key to highest_key.
+* After the code runs, highest_key will be the key associated with the highest value in the dictionary.
+
+# PANDAS
+
+Pandas is a library that unifies the most common workflows that data analysts and data scientists previously relied on many different libraries for. Pandas has quickly became an important tool in a data professional's toolbelt and is the most popular library for working with tabular data in Python. Tabular data is any data that can be represented as rows and columns. The CSV files we've worked with in previous missions are all examples of tabular data.
+
+To represent tabular data, pandas uses a custom data structure called a dataframe. A dataframe is a highly efficient, 2-dimensional data structure that provides a suite of methods and attributes to quickly explore, analyze, and visualize data. The dataframe is similar to the NumPy 2D array but adds support for many features that help you work with tabular data.
+
+One of the biggest advantages that pandas has over NumPy is the ability to store mixed data types in rows and columns. Many tabular datasets contain a range of data types and pandas dataframes handle mixed data types effortlessly while NumPy doesn't. Pandas dataframes can also handle missing values gracefully using a custom object, NaN, to represent those values. A common complaint with NumPy is its lack of an object to represent missing values and people end up having to find and replace these values manually. In addition, pandas dataframes contain axis labels for both rows and columns and enable you to refer to elements in the dataframe more intuitively. Since many tabular datasets contain column titles, this means that dataframes preserve the metadata from the file around the data.
+
+In this mission, you'll learn the basics of pandas while exploring a dataset from the [United States Department of Agriculture (USDA)] (http://www.ars.usda.gov/Services/docs.htm?docid=8964). This dataset contains nutritional information on the most common foods Americans consume. Each column in the dataset shows a different attribute of the foods and each row describes a different food item.
+
+Here are some of the columns in the dataset:
+
+* NDB_No - unique id of the food.
+* Shrt_Desc - name of the food.
+* Water_(g) - water content in grams.
+* Energ_Kcal - energy measured in kilo-calories.
+* Protein_(g) - protein measured in grams.
+* Cholestrl_(mg) - cholesterol in milligrams.
+
+To use the Pandas library, we need to import it into the environment using the import keyword:
+We can then refer to the module using pandas and use dot notation to call its methods. To read a CSV file into a dataframe, we use the pandas.read_csv() function and pass in the file name as a string:
+
+Now that we've read the dataset into a dataframe, we can start using the dataframe methods to explore the data. To select the first 5 rows of a dataframe, use the dataframe method head(). When you call the head() method, pandas will return a new dataframe containing just the first 5 rows:
+
+`first_rows = food_info.head()`
+
+If you peek at the [documentation] (http://pandas.pydata.org/pandas-docs/version/0.17.1/generated/pandas.DataFrame.head.html), you'll notice that you can pass in an integer (n) into the head() method to display the first n rows instead of the first 5:
+
+```# First 3 rows.
+print(food_info.head(3))```
+
+Because this dataframe contains many columns and rows, pandas uses ellipsis (...) to hide the columns and rows in the middle. Only the first few and the last few columns and rows are displayed to conserve space.
+To access the full list of column names, use the columns attribute:
+`column_names = food_info.columns`
+Lastly, you can use the shape attribute to understand the dimensions of the dataframe. The shape attribute returns a tuple of integers representing the number of rows followed by the number of columns:
+
+```
+# Returns the tuple (8618,36) and assigns to `dimensions`.
+dimensions = food_info.shape
+# The number of rows, 8618.
+num_rows = dimensions[0]
+# The number of columns, 36.
+num_cols = dimensions[1]
+
+```
+When you read in a file into a dataframe, pandas uses the values in the first row (also known as the header) for the column labels and the row number for the row labels. Collectively, the labels are referred to as the index. dataframes contain both a row index and a column index. Here's a diagram that displays some of the column and row labels for food_info:
+
+The Series object is a core data structure that pandas uses to represent rows and columns. A Series is a labelled collection of values similar to the NumPy vector. The main advantage of Series objects is the ability to utilize non-integer labels. NumPy arrays can only utilize integer labels for indexing.
+
+Pandas utilizes this feature to provide more context when returning a row or a column from a dataframe. For example, when you select a row from a dataframe, instead of just returning the values in that row as a list, pandas returns a Series object that contains the column labels as well as the corresponding values:
+
+While we use bracket notation to access elements in a NumPy array or a standard list, we need to use the pandas method loc[] to select rows in a dataframe. The loc[] method allows you to select rows by row labels. Recall that when you read a file into a dataframe, pandas uses the row number (or position) as each row's label. Pandas uses zero-indexing, so the first row is at index 0, the second row at index 1, and so on.
+```
+# Series object representing the row at index 0.
+food_info.loc[0]
+
+# Series object representing the seventh row.
+food_info.loc[6]
+
+# Will throw an error: "KeyError: 'the label [8620] is not in the [index]'"
+food_info.loc[8620]
+```
+When accessing an individual row, pandas returns a Series object containing the column names and that row's value for each column. In the following code cell, we select the first and seventh rows and display them using the print() function.
+
+When you displayed individual rows, represented as Series objects, you may have noticed the text "dtype: object" after the last value. dtype: object refers to the data type, or dtype, of that Series. The object dtype is equivalent to the string type in Python. Pandas borrows from the NumPy type system and contains the following dtypes:
+
+* object - for representing string values.
+* int - for representing integer values.
+* float - for representing float values.
+* datetime - for representing time values.
+* bool - for representing Boolean values.
+
+When reading a file into a dataframe, pandas analyzes the values and infers each column's types. To access the types for each column, use the DataFrame.dtypes attribute to return a Series containing each column name and its corresponding type. Read more about data types on the Pandas [documentation] (http://pandas.pydata.org/pandas-docs/stable/basics.html#dtypes).
+
+If you're interested in accessing multiple rows of the dataframe, you can pass in either a slice of row labels or a list of row labels and pandas will return a dataframe. Note that unlike slicing lists in Python, a slice of a dataframe using .loc[] will include both the start and the end row:
+
+```
+# DataFrame containing the rows at index 3, 4, 5, and 6 returned.
+food_info.loc[3:6]
+
+# DataFrame containing the rows at index 2, 5, and 10 returned. Either of the following work.
+# Method 1
+two_five_ten = [2,5,10] 
+food_info.loc[two_five_ten]
+
+# Method 2
+food_info.loc[[2,5,10]]
+```
+When accessing a column in a dataframe, pandas returns a Series object containing the row label and each row's value for that column. To access a single column, use bracket notation and pass in the column name as a string.
+
+```
+# Series object representing the "NDB_No" column.
+ndb_col = food_info["NDB_No"]
+
+# You can instead access a column by passing in a string variable.
+col_name = "NDB_No"
+ndb_col = food_info[col_name]
+```
+
+To select multiple columns, pass in a list of strings representing the column names and pandas will return a dataframe containing only the values in those columns. The following code returns a dataframe containing the "Zinc_(mg)" and "Copper_(mg)" columns, in that order:
+```
+columns = ["Zinc_(mg)", "Copper_(mg)"]
+zinc_copper = food_info[columns]
+
+# Skipping the assignment.
+zinc_copper = food_info[["Zinc_(mg)", "Copper_(mg)"]]
+```
+When selecting multiple columns, the order of the columns in the returned dataframe matches the order of the column names in the list of strings that you passed in. This allows you to easily explore specific columns that may not be positioned next to each other in the dataframe.
+
+##### Exercise
+* Select and display only the columns that use grams for measurement (that end with "(g)"). To accomplish this:
+* Use the columns attribute to return the column names in food_info and convert to a list by calling the method tolist()
+* Create a new list, gram_columns, containing only the column names that end in "(g)". The string method endswith() returns True if the string object calling the method ends with the string passed into the parentheses.
+* Pass gram_columns into bracket notation to select just those columns and assign the resulting dataframe to gram_df
+* Then use the dataframe method head() to display the first 3 rows of gram_df.
+##### Answer
+
+```
+  print(food_info.columns)
+  print(food_info.head(2))
+  col_names = food_info.columns.tolist()
+  gram_columns = []
+
+  for c in col_names:
+      if c.endswith("(g)"):
+          gram_columns.append(c)
+  gram_df = food_info[gram_columns]
+  print(gram_df.head(3))
+  
+```
+
+
